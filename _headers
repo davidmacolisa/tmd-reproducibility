@@ -1,0 +1,41 @@
+# TMD Reproducibility Mirror — Cloudflare Pages _headers
+#
+# MP.34 External Reproducibility Protocol requires this mirror to be a
+# permanent, publicly-auditable record. Headers here establish the minimum
+# security posture + wide-open CORS so third-party tools (YouTube
+# description links, archive bots, audit scripts) can fetch without friction.
+#
+# Syntax reference: https://developers.cloudflare.com/pages/configuration/headers/
+# Netlify-compatible (same format if host ever migrates).
+
+# ---------------------------------------------------------------------------
+# Global: security + CORS baseline applied to every path
+# ---------------------------------------------------------------------------
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  Access-Control-Allow-Headers: Content-Type
+
+# ---------------------------------------------------------------------------
+# JSON: canonical format for Reproducibility Packages, asset manifests,
+# archive snapshot indices, derivation records
+# ---------------------------------------------------------------------------
+/*.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# ---------------------------------------------------------------------------
+# Asset hashes: once published, content-addressed; safe to cache immutably
+# ---------------------------------------------------------------------------
+/episodes/*/hashes/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ---------------------------------------------------------------------------
+# Archive snapshots manifest: rarely changes, long cache OK
+# ---------------------------------------------------------------------------
+/episodes/*/archive_manifest.json
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
